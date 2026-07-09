@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Шашки Mini App</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>Шашки</h1>
+        <p id="subtitle">Telegram Mini App</p>
+      </div>
+      <button id="newGameBtn" class="pill">Новая игра</button>
+    </header>
+
+    <section id="levelScreen" class="card level-card">
+      <h2>Выберите сложность</h2>
+      <p>Вы играете белыми. Бот играет чёрными.</p>
+      <div class="level-buttons">
+        <button data-level="easy" class="level easy">Лёгкий</button>
+        <button data-level="normal" class="level normal">Средний</button>
+        <button data-level="hard" class="level hard">Сложный</button>
+      </div>
+    </section>
+
+    <main id="gameScreen" class="game hidden">
+      <section class="hud">
+        <div class="player active" id="userPanel">
+          <span class="dot white"></span>
+          <div>
+            <b>Вы</b>
+            <small>белые</small>
+          </div>
+        </div>
+
+        <div class="status">
+          <span id="difficultyLabel">Средний</span>
+          <strong id="statusText">Ваш ход</strong>
+        </div>
+
+        <div class="player" id="botPanel">
+          <span class="dot black"></span>
+          <div>
+            <b>Бот</b>
+            <small>чёрные</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="board-wrap">
+        <div id="board" class="board"></div>
+      </section>
+
+      <section class="controls card">
+        <button id="rulesBtn">Правила</button>
+        <button id="hintBtn">Подсказка</button>
+        <button id="closeBtn">Закрыть</button>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div id="rulesModal" class="modal hidden">
+      <div class="modal-box">
+        <h2>Правила</h2>
+        <p>Взятие обязательно. Простые шашки ходят вперёд по диагонали, бьют вперёд и назад. Дамки ходят на одну клетку в любую сторону. После взятия, если можно бить ещё, ход продолжается.</p>
+        <button id="rulesCloseBtn" class="pill">Понятно</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
