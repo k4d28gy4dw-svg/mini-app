@@ -10,11 +10,17 @@
 <body>
   <div class="app">
     <header class="topbar">
-      <div>
-        <h1>Шашки</h1>
-        <p id="subtitle">Telegram Mini App</p>
+      <div class="branding">
+        <div class="brand-icon">♟</div>
+        <div>
+          <h1>Шашки</h1>
+          <p id="subtitle">Telegram Mini App</p>
+        </div>
       </div>
-      <button id="newGameBtn" class="pill">Новая игра</button>
+      <div class="top-actions">
+        <button id="soundBtn" class="pill ghost">🔊 Звук</button>
+        <button id="newGameBtn" class="pill">Новая игра</button>
+      </div>
     </header>
 
     <section id="levelScreen" class="card level-card">
@@ -28,6 +34,27 @@
     </section>
 
     <main id="gameScreen" class="game hidden">
+      <section class="scoreboard card">
+        <div class="score-item">
+          <div class="score-piece white-piece"></div>
+          <div>
+            <small>Ваши победы</small>
+            <strong id="winsCount">0</strong>
+          </div>
+        </div>
+        <div class="score-center">
+          <div class="difficulty-badge" id="difficultyLabel">Средний</div>
+          <div class="score-sep">VS</div>
+        </div>
+        <div class="score-item reverse">
+          <div>
+            <small>Победы бота</small>
+            <strong id="lossesCount">0</strong>
+          </div>
+          <div class="score-piece black-piece"></div>
+        </div>
+      </section>
+
       <section class="hud">
         <div class="player active" id="userPanel">
           <span class="dot white"></span>
@@ -38,7 +65,7 @@
         </div>
 
         <div class="status">
-          <span id="difficultyLabel">Средний</span>
+          <span>Статус игры</span>
           <strong id="statusText">Ваш ход</strong>
         </div>
 
@@ -51,13 +78,17 @@
         </div>
       </section>
 
-      <section class="board-wrap">
-        <div id="board" class="board"></div>
+      <section class="board-section">
+        <div class="board-wrap">
+          <div id="board" class="board"></div>
+          <div id="boardFx" class="board-fx"></div>
+        </div>
       </section>
 
       <section class="controls card">
         <button id="rulesBtn">Правила</button>
         <button id="hintBtn">Подсказка</button>
+        <button id="resetScoreBtn">Сбросить счёт</button>
         <button id="closeBtn">Закрыть</button>
       </section>
     </main>
