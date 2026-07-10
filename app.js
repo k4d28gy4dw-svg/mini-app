@@ -45,6 +45,8 @@ $("createRoomBtn").onclick = () => createOnlineRoom();
 $("joinRoomBtn").onclick = () => joinOnlineRoom($("roomInput").value.trim().toUpperCase());
 $("copyRoomBtn").onclick = () => copyRoomLink();
 $("shareRoomBtn").onclick = () => shareRoomLink();
+$("resultHomeBtn").onclick = () => { hideResultBanner(); goHome(); };
+$("resultAgainBtn").onclick = () => { hideResultBanner(); game?.mode === "online" ? newOnlineGame() : showScreen("levelScreen"); };
 $("sendChatBtn").onclick = () => sendChatMessage();
 $("chatInput").onkeydown = (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
@@ -780,7 +782,30 @@ async function finish(msg) {
 
   render();
   showToast(msg);
+  showResultBanner(playerWon ? "win" : "lose", msg);
 }
+
+function showResultBanner(type, message) {
+  $("resultHomeBtn").onclick = () => { hideResultBanner(); goHome(); };
+  $("resultAgainBtn").onclick = () => { hideResultBanner(); game?.mode === "online" ? newOnlineGame() : showScreen("levelScreen"); };
+  const banner = $("resultBanner");
+  banner.className = `result-banner ${type}`;
+  $("resultIcon").textContent = type === "win" ? "🏆" : type === "draw" ? "🤝" : "🛡️";
+  $("resultKicker").textContent = type === "win" ? "Отличная партия" : type === "draw" ? "Равная игра" : "Партия окончена";
+  $("resultTitle").textContent = type === "win" ? "Победа!" : type === "draw" ? "Ничья" : "Поражение";
+  $("resultMessage").textContent = message;
+  const confetti = $("resultConfetti");
+  confetti.innerHTML = "";
+  if (type === "win") for (let i = 0; i < 28; i++) {
+    const bit = document.createElement("i");
+    bit.style.setProperty("--x", `${Math.random() * 100}vw`);
+    bit.style.setProperty("--delay", `${Math.random() * .8}s`);
+    bit.style.setProperty("--spin", `${Math.random() * 700 - 350}deg`);
+    confetti.appendChild(bit);
+  }
+}
+
+function hideResultBanner() { $("resultBanner").classList.add("hidden"); }
 
 function showHint() {
   if (!game || game.finished) return;
