@@ -25,7 +25,17 @@
     </header>
 
     <section id="homeScreen" class="card start-card">
-      <h2>Выберите режим</h2>
+      <h2>Выберите игру</h2>
+      <p>Три классические игры — против бота или онлайн с другом.</p>
+      <div class="game-catalog">
+        <button id="checkersGameBtn" class="game-tile"><span>⛀</span><b>Шашки</b><small>Классическая доска 8 × 8</small></button>
+        <button id="chessGameBtn" class="game-tile chess"><span>♚</span><b>Шахматы</b><small>Фигуры, шах и мат</small></button>
+        <button id="seaGameBtn" class="game-tile sea"><span>🚢</span><b>Морской бой</b><small>Флот и залпы по клеткам</small></button>
+      </div>
+    </section>
+
+    <section id="modeScreen" class="card start-card hidden">
+      <h2>Шашки</h2>
       <p>Играйте против бота или онлайн с реальным соперником.</p>
       <div class="main-buttons">
         <button id="botModeBtn" class="big-action">🤖 Играть с ботом</button>
@@ -153,5 +163,6 @@
 
   <script src="./config.js"></script>
   <script src="./app.js"></script>
+  <script src="./extra-games.js"></script>
 </body>
 </html>
