@@ -117,6 +117,21 @@
         </div>
       </section>
 
+      <section id="chatPanel" class="chat-panel card hidden">
+        <div class="chat-head">
+          <div>
+            <strong>Чат комнаты</strong>
+            <small>Сообщения видят оба игрока</small>
+          </div>
+          <span id="chatCount">0</span>
+        </div>
+        <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+        <div class="chat-compose">
+          <input id="chatInput" type="text" placeholder="Напишите сообщение…" maxlength="240" autocomplete="off" />
+          <button id="sendChatBtn" type="button">Отправить</button>
+        </div>
+      </section>
+
       <section class="controls card">
         <button id="newGameBtn">Новая игра</button>
         <button id="hintBtn">Подсказка</button>
