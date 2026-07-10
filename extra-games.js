@@ -5,7 +5,7 @@
   const pid = localStorage.getItem("checkers_online_player_id") || `p_${Math.random().toString(36).slice(2)}`;
   const name = () => window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name || "Игрок";
   const $ = (id) => document.getElementById(id);
-  let x = null, channel = null;
+  let x = null, channel = null, resultShown = false;
 
   const shell = document.createElement("main");
   shell.id = "extraGameScreen";
@@ -37,7 +37,7 @@
 
   function openGame(type) {
     hideBase();
-    x = { type, mode: null, roomId: null, color: "w", state: null, selected: null };
+    x = { type, mode: null, roomId: null, color: "w", state: null, selected: null }; resultShown = false;
     $("xTitle").textContent = type === "chess" ? "♚ Шахматы" : "🚢 Морской бой";
     $("xMenuTitle").textContent = type === "chess" ? "Шахматы" : "Морской бой";
     $("xSubtitle").textContent = "Выберите режим";
@@ -47,6 +47,7 @@
   }
 
   function startBot() {
+    $("resultBanner").classList.add("hidden"); resultShown = false;
     x.mode = "bot"; x.color = "w"; x.state = x.type === "chess" ? chessState() : seaState(true);
     $("xMenu").classList.add("hidden"); $("xOnlinePanel").classList.add("hidden"); $("xSubtitle").textContent = "Игра против бота"; render();
   }
@@ -100,12 +101,13 @@
   async function seaShoot(r,c){if(x.state.finished)return;const me=x.color, foe=me==="w"?"black":"white";if(x.state.turn!==me||!x.state[`${foe}Fleet`])return;const shots=x.state[`${me==="w"?"white":"black"}Shots`];if(shots[r][c])return;const hit=!!x.state[`${foe}Fleet`][r][c];shots[r][c]=hit?2:1;if(hit)x.state[`${foe}Fleet`][r][c]=0;if(!fleetAlive(x.state[`${foe}Fleet`])){x.state.finished=true;x.state.message="Победа! Флот уничтожен";}else{x.state.turn=me==="w"?"b":"w";x.state.message=hit?"Попадание! Ход соперника":"Мимо. Ход соперника";}render();if(x.mode==="online")await save();else if(!x.state.finished)setTimeout(seaBot,450);}
   function seaBot(){const shots=x.state.blackShots,free=[];for(let r=0;r<10;r++)for(let c=0;c<10;c++)if(!shots[r][c])free.push([r,c]);const[r,c]=free[Math.floor(Math.random()*free.length)],hit=!!x.state.whiteFleet[r][c];shots[r][c]=hit?2:1;if(hit)x.state.whiteFleet[r][c]=0;if(!fleetAlive(x.state.whiteFleet)){x.state.finished=true;x.state.message="Бот победил";}else{x.state.turn="w";x.state.message=hit?"Бот попал. Ваш ход":"Бот промахнулся. Ваш ход";}render();}
 
-  function render(){if(!x?.state)return;status(x.state.message||"Игра");if(x.type==="chess")renderChess();else renderSea();renderChat();}
+  function render(){if(!x?.state)return;status(x.state.message||"Игра");if(x.type==="chess")renderChess();else renderSea();renderChat();if(x.state.finished&&!resultShown){resultShown=true;showExtraResult();}}
+  function showExtraResult(){const msg=x.state.message||"Игра завершена";const won=/Победа|Белые победили/.test(msg)?x.color==="w":/Чёрные победили/.test(msg)?x.color==="b":false;const banner=$("resultBanner");banner.className=`result-banner ${won?"win":"lose"}`;$("resultIcon").textContent=won?"🏆":"🛡️";$("resultKicker").textContent=won?"Отличная партия":"Партия окончена";$("resultTitle").textContent=won?"Победа!":"Поражение";$("resultMessage").textContent=msg;const confetti=$("resultConfetti");confetti.innerHTML="";if(won)for(let i=0;i<28;i++){const bit=document.createElement("i");bit.style.setProperty("--x",`${Math.random()*100}vw`);bit.style.setProperty("--delay",`${Math.random()*.8}s`);bit.style.setProperty("--spin",`${Math.random()*700-350}deg`);confetti.appendChild(bit)}$("resultAgainBtn").onclick=()=>{$("resultBanner").classList.add("hidden");resultShown=false;restart()};$("resultHomeBtn").onclick=()=>{$("resultBanner").classList.add("hidden");home()};}
   function renderChess(){const b=document.createElement("div");b.className="extra-board";const targets=x.selected?chessMoves(x.state.board,...x.selected):[];for(let r=0;r<8;r++)for(let c=0;c<8;c++){const q=document.createElement("button");q.className=`chess-cell ${(r+c)%2?"dark":"light"}`;if(x.selected?.[0]===r&&x.selected[1]===c)q.classList.add("selected");if(targets.some(t=>t[0]===r&&t[1]===c))q.classList.add("target");q.textContent=glyph[x.state.board[r][c]]||"";q.onclick=()=>chessClick(r,c);b.appendChild(q)}$("xBoardHost").replaceChildren(b);}
   function renderSea(){const layout=document.createElement("div");layout.className="sea-layout";layout.append(seaBoard("Ваш флот",x.color==="w"?x.state.whiteFleet:x.state.blackFleet,x.color==="w"?x.state.blackShots:x.state.whiteShots,false),seaBoard("Поле соперника",null,x.color==="w"?x.state.whiteShots:x.state.blackShots,true));$("xBoardHost").replaceChildren(layout);}
   function seaBoard(title,fleet,shots,enemy){const w=document.createElement("div");w.className="sea-board-wrap";w.innerHTML=`<h3>${title}</h3>`;const b=document.createElement("div");b.className="sea-board";for(let r=0;r<10;r++)for(let c=0;c<10;c++){const q=document.createElement("button");q.className="sea-cell";if(fleet?.[r]?.[c])q.classList.add("ship");if(shots?.[r]?.[c]===1)q.classList.add("miss");if(shots?.[r]?.[c]===2)q.classList.add("hit");if(enemy)q.onclick=()=>seaShoot(r,c);b.appendChild(q)}w.appendChild(b);return w;}
   function renderChat(){const chat=x.state.chat||[];$("xChatCount").textContent=chat.length;$("xMessages").innerHTML="";for(const m of chat.slice(-50)){const d=document.createElement("div");d.className=`chat-message${m.playerId===pid?" mine":""}`;const meta=document.createElement("div");meta.className="chat-meta";meta.textContent=m.playerId===pid?"Вы":m.author;const p=document.createElement("p");p.textContent=m.text;d.append(meta,p);$("xMessages").appendChild(d)}}
   async function sendMessage(){if(x?.mode!=="online")return;const text=$("xMessage").value.trim();if(!text)return;$("xMessage").value="";x.state.chat=[...(x.state.chat||[]),{id:`${pid}_${Date.now()}`,playerId:pid,author:name(),text:text.slice(0,240)}].slice(-50);renderChat();await save();}
-  async function restart(){if(!x)return;if(x.mode==="bot")return startBot();if(x.color!=="w")return toast("Новую игру создаёт первый игрок");const fresh=x.type==="chess"?chessState():seaState(false);Object.assign(fresh,{gameType:x.type,whiteId:x.state.whiteId,whiteName:x.state.whiteName,blackId:x.state.blackId,blackName:x.state.blackName,chat:x.state.chat||[]});if(x.type==="sea"&&fresh.blackId)fresh.blackFleet=makeFleet();x.state=fresh;await save();render();}
+  async function restart(){if(!x)return;$("resultBanner").classList.add("hidden");resultShown=false;if(x.mode==="bot")return startBot();if(x.color!=="w")return toast("Новую игру создаёт первый игрок");const fresh=x.type==="chess"?chessState():seaState(false);Object.assign(fresh,{gameType:x.type,whiteId:x.state.whiteId,whiteName:x.state.whiteName,blackId:x.state.blackId,blackName:x.state.blackName,chat:x.state.chat||[]});if(x.type==="sea"&&fresh.blackId)fresh.blackFleet=makeFleet();x.state=fresh;await save();render();}
   function status(t){$("xStatus").textContent=t} function toast(t){$("toast").textContent=t;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),1900)}
 })();
