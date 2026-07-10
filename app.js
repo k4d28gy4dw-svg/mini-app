@@ -44,6 +44,13 @@ $("createRoomBtn").onclick = () => createOnlineRoom();
 $("joinRoomBtn").onclick = () => joinOnlineRoom($("roomInput").value.trim().toUpperCase());
 $("copyRoomBtn").onclick = () => copyRoomLink();
 $("shareRoomBtn").onclick = () => shareRoomLink();
+$("sendChatBtn").onclick = () => sendChatMessage();
+$("chatInput").onkeydown = (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendChatMessage();
+  }
+};
 
 document.querySelectorAll("[data-level]").forEach((btn) => {
   btn.onclick = () => {
@@ -73,6 +80,7 @@ function goHome() {
     sb?.removeChannel(roomChannel);
     roomChannel = null;
   }
+  $("chatPanel").classList.add("hidden");
   showScreen("homeScreen");
 }
 
@@ -132,6 +140,7 @@ function createInitialState(whiteId = playerId) {
     blackId: null,
     whiteName: playerName(),
     blackName: null,
+    chat: [],
     updatedAt: Date.now(),
   };
 }
@@ -199,6 +208,7 @@ async function enterOnlineRoom(roomId, state) {
   applyOnlineState(state);
   showScreen("gameScreen");
   $("roomPanel").classList.remove("hidden");
+  $("chatPanel").classList.remove("hidden");
   $("modeLabel").textContent = "Онлайн";
   $("roomLabel").textContent = roomId;
   $("roomCodeText").textContent = roomId;
@@ -228,7 +238,62 @@ function applyOnlineState(state) {
   $("enemyName").textContent = game.playerColor === "w" ? (state.blackName || "Ожидаем") : (state.whiteName || "Ожидаем");
   $("userColor").textContent = game.playerColor === "w" ? "белые" : "чёрные";
   $("enemyColor").textContent = game.playerColor === "w" ? "чёрные" : "белые";
+  renderChat(state.chat || []);
   render();
+}
+
+function renderChat(messages) {
+  const list = $("chatMessages");
+  list.innerHTML = "";
+  $("chatCount").textContent = String(messages.length);
+
+  if (!messages.length) {
+    const empty = document.createElement("p");
+    empty.className = "chat-empty";
+    empty.textContent = "Пока сообщений нет. Поздоровайтесь с соперником!";
+    list.appendChild(empty);
+    return;
+  }
+
+  for (const message of messages.slice(-50)) {
+    const item = document.createElement("div");
+    item.className = `chat-message${message.playerId === playerId ? " mine" : ""}`;
+
+    const meta = document.createElement("div");
+    meta.className = "chat-meta";
+    const author = document.createElement("strong");
+    author.textContent = message.playerId === playerId ? "Вы" : (message.author || "Игрок");
+    const time = document.createElement("time");
+    time.textContent = new Date(message.createdAt || Date.now()).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+    meta.append(author, time);
+
+    const text = document.createElement("p");
+    text.textContent = message.text || "";
+    item.append(meta, text);
+    list.appendChild(item);
+  }
+  list.scrollTop = list.scrollHeight;
+}
+
+async function sendChatMessage() {
+  if (!game || game.mode !== "online") return;
+  if (!game.onlineState?.blackId) return showToast("Дождитесь второго игрока");
+
+  const input = $("chatInput");
+  const text = input.value.trim().replace(/\s+/g, " ");
+  if (!text) return;
+
+  const chat = [...(game.onlineState.chat || []), {
+    id: `${playerId}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    playerId,
+    author: playerName(),
+    text: text.slice(0, 240),
+    createdAt: Date.now(),
+  }].slice(-50);
+
+  input.value = "";
+  await saveOnlineState({ chat });
+  renderChat(chat);
 }
 
 function onlineMessage(state) {
@@ -308,6 +373,7 @@ function startBotGame(level = "normal") {
     message: "Ваш ход. Нажмите на белую шашку.",
   };
   $("roomPanel").classList.add("hidden");
+  $("chatPanel").classList.add("hidden");
   $("modeLabel").textContent = "Бот: " + LEVEL_LABEL[level];
   $("roomLabel").textContent = "VS";
   $("userName").textContent = "Вы";
