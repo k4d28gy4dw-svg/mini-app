@@ -28,10 +28,11 @@ let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
 let audioCtx = null;
 
 const $ = (id) => document.getElementById(id);
-const screens = ["homeScreen", "levelScreen", "onlineScreen", "gameScreen"];
+const screens = ["homeScreen", "modeScreen", "levelScreen", "onlineScreen", "gameScreen"];
 const score = loadScore();
 
 $("botModeBtn").onclick = () => showScreen("levelScreen");
+$("checkersGameBtn").onclick = () => showScreen("modeScreen");
 $("onlineModeBtn").onclick = () => showOnlineScreen();
 $("homeBtn").onclick = () => goHome();
 $("newGameBtn").onclick = () => game?.mode === "online" ? newOnlineGame() : showScreen("levelScreen");
@@ -163,6 +164,7 @@ async function joinOnlineRoom(roomId) {
 
   const { data, error } = await sb.from("checkers_rooms").select("*").eq("id", roomId).single();
   if (error || !data) return showToast("Комната не найдена");
+  if (data.state?.gameType && data.state.gameType !== "checkers") return showToast("Это комната другой игры");
 
   let state = data.state;
 
