@@ -1,0 +1,8 @@
+{
+  "name": "mini-games-telegram-app",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"test":"node --test","check":"node --check api/_lib/chat.js && node --check api/_lib/telegram.js && node --check api/chat/messages.js && node --check api/telegram/webhook.js"},
+  "dependencies": {"@supabase/supabase-js":"^2.57.0"}
+}
