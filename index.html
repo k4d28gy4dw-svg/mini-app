@@ -21,11 +21,24 @@
       <div class="top-actions">
         <div class="wallet-pill"><b id="coinBalance">🪙 0</b><small id="gamesLeft">15 игр</small></div>
         <button id="soundBtn" class="pill ghost">🔊 Звук</button>
-        <button id="homeBtn" class="pill">Игры</button>
+        <button id="homeBtn" class="pill">Разделы</button>
       </div>
     </header>
 
-    <section id="homeScreen" class="card start-card">
+    <section id="portalScreen" class="portal-screen">
+      <div class="portal-intro">
+        <span class="portal-logo">🎮</span>
+        <h2>Выберите раздел</h2>
+        <p>Куда отправимся?</p>
+      </div>
+      <div class="portal-menu" aria-label="Основные разделы">
+        <button id="gamesTabBtn" class="portal-button games" type="button"><span>🎮</span><div><b>Игры</b><small>10 классических игр и аркад</small></div><i>→</i></button>
+        <button id="gptAgentBtn" class="portal-button gpt" type="button"><span>✨</span><div><b>GPT агент</b><small>Отдельный диалог с искусственным интеллектом</small></div><i>→</i></button>
+        <button id="createBotTabBtn" class="portal-button create" type="button"><span>🤖</span><div><b>Создать своего бота</b><small>Связаться с разработчиком</small></div><i>→</i></button>
+      </div>
+    </section>
+
+    <section id="homeScreen" class="card start-card hidden">
       <h2>Выберите игру</h2>
       <p>Классические игры и быстрые аркады. За победу вы получаете 1 монету.</p>
       <div class="game-catalog">
@@ -166,12 +179,6 @@
         <button id="closeBtn">Закрыть</button>
       </section>
     </main>
-
-    <nav id="mainTabs" class="main-tabs card" aria-label="Основные разделы">
-      <button id="gamesTabBtn" class="main-tab active" type="button"><span>🎮</span><b>Игры</b></button>
-      <button id="gptAgentBtn" class="main-tab" type="button"><span>✨</span><b>GPT агент</b></button>
-      <button id="createBotTabBtn" class="main-tab" type="button"><span>🤖</span><b>Создать бота</b></button>
-    </nav>
 
     <div id="toast" class="toast hidden"></div>
 
