@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Шашки Online Mini App</title>
+  <title>Мини игры</title>
   <link rel="stylesheet" href="./styles.css" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,16 +12,16 @@
   <div class="app">
     <header class="topbar">
       <div class="branding">
-        <div class="brand-icon">♟</div>
+        <div class="brand-icon">🎮</div>
         <div>
-          <h1>Игры</h1>
-          <p id="subtitle">Классика и быстрые аркады</p>
+          <h1>Мини игры</h1>
+          <p id="subtitle">Играйте, общайтесь с ИИ, создавайте</p>
         </div>
       </div>
       <div class="top-actions">
         <div class="wallet-pill"><b id="coinBalance">🪙 0</b><small id="gamesLeft">15 игр</small></div>
         <button id="soundBtn" class="pill ghost">🔊 Звук</button>
-        <button id="homeBtn" class="pill">Главная</button>
+        <button id="homeBtn" class="pill">Игры</button>
       </div>
     </header>
 
@@ -39,9 +39,7 @@
         <button class="game-tile arcade merge" data-arcade="merge"><span>🔢</span><b>2048</b><small>Объединяйте числа</small></button>
         <button class="game-tile arcade memory" data-arcade="memory"><span>🧠</span><b>Мемори</b><small>Найдите все пары</small></button>
         <button class="game-tile arcade tictac" data-arcade="tictac"><span>⭕</span><b>Крестики-нолики</b><small>Победите бота</small></button>
-        <button id="gptAgentBtn" class="game-tile gpt-agent-tile"><span>✨</span><b>GPT-агент</b><small>Отдельный ИИ-диалог</small></button>
       </div>
-      <a class="create-bot-cta" href="https://t.me/ibraEz" target="_blank" rel="noopener"><span>🤖</span><div><b>Создать своего бота</b><small>Написать разработчику в Telegram</small></div><i>→</i></a>
     </section>
 
     <main id="gptScreen" class="gpt-screen hidden">
@@ -168,6 +166,12 @@
         <button id="closeBtn">Закрыть</button>
       </section>
     </main>
+
+    <nav id="mainTabs" class="main-tabs card" aria-label="Основные разделы">
+      <button id="gamesTabBtn" class="main-tab active" type="button"><span>🎮</span><b>Игры</b></button>
+      <button id="gptAgentBtn" class="main-tab" type="button"><span>✨</span><b>GPT агент</b></button>
+      <button id="createBotTabBtn" class="main-tab" type="button"><span>🤖</span><b>Создать бота</b></button>
+    </nav>
 
     <div id="toast" class="toast hidden"></div>
 
