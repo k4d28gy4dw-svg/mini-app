@@ -39,9 +39,19 @@
         <button class="game-tile arcade merge" data-arcade="merge"><span>🔢</span><b>2048</b><small>Объединяйте числа</small></button>
         <button class="game-tile arcade memory" data-arcade="memory"><span>🧠</span><b>Мемори</b><small>Найдите все пары</small></button>
         <button class="game-tile arcade tictac" data-arcade="tictac"><span>⭕</span><b>Крестики-нолики</b><small>Победите бота</small></button>
+        <button id="gptAgentBtn" class="game-tile gpt-agent-tile"><span>✨</span><b>GPT-агент</b><small>Отдельный ИИ-диалог</small></button>
       </div>
       <a class="create-bot-cta" href="https://t.me/ibraEz" target="_blank" rel="noopener"><span>🤖</span><div><b>Создать своего бота</b><small>Написать разработчику в Telegram</small></div><i>→</i></a>
     </section>
+
+    <main id="gptScreen" class="gpt-screen hidden">
+      <section class="gpt-screen-head card"><div><h2>✨ GPT-агент</h2><small>Ваш отдельный диалог с искусственным интеллектом</small></div><button id="gptBack">К играм</button></section>
+      <section class="gpt-card card">
+        <div id="gptMessages" class="gpt-messages" aria-live="polite"></div>
+        <div id="gptError" class="gpt-error hidden"></div>
+        <div class="gpt-compose"><input id="gptInput" maxlength="4000" placeholder="Спросите что угодно…"><button id="gptSend">Отправить</button></div>
+      </section>
+    </main>
 
     <section id="modeScreen" class="card start-card hidden">
       <h2>Шашки</h2>
@@ -188,5 +198,6 @@
   <script src="./app.js"></script>
   <script src="./extra-games.js"></script>
   <script src="./arcade-games.js"></script>
+  <script src="./gpt-chat.js"></script>
 </body>
 </html>
